@@ -407,21 +407,28 @@ namespace octomap {
     // at last level, update node, end of recursion
     else {
       if (use_change_detection) {
-//        bool occBefore = this->isNodeOccupied(node);
+        // New nodes will be treated as unoccupied prior to updating log odds
+        bool occBefore = !node_just_created && this->isNodeOccupied(node);
         updateNodeLogOdds(node, log_odds_update);
+        bool occAfter = this->isNodeOccupied(node);
 
-        if (node_just_created) {  // new node
-            changed_keys.insert(std::pair<OcTreeKey, bool>(key, true));
-        } else {
-//        else if (occBefore != this->isNodeOccupied(node)) {  // occupancy changed, track it
-//            KeyBoolMap::iterator it = changed_keys.find(key);
-//            if (it == changed_keys.end())
-//                changed_keys.insert(std::pair<OcTreeKey,bool>(key, false));
-//            else if (it->second == false)
-//                changed_keys.erase(it); // ToDo - not sure about this...
-            KeyBoolMap::iterator it = changed_keys.find(key);
-            if (it == changed_keys.end())
-                changed_keys.insert(std::pair<OcTreeKey,bool>(key, false));
+        // if node occupation is altered by change, then save it as a change
+        // This only includes cells which go from empty/unknown to occupied, or from occupied to empty.
+        // This excludes cells which go from empty/unknown to empty, or from occupied to occupied.
+        if (occBefore != occAfter) {
+            if (node_just_created) {  // new node
+                changed_keys.insert(std::pair<OcTreeKey, bool>(key, true));
+            } else {
+                // else if (occBefore != occAfter) {  // occupancy changed, track it
+                //   KeyBoolMap::iterator it = changed_keys.find(key);
+                //   if (it == changed_keys.end())
+                //     changed_keys.insert(std::pair<OcTreeKey,bool>(key, false));
+                //   else if (it->second == false)
+                //     changed_keys.erase(it);
+                KeyBoolMap::iterator it = changed_keys.find(key);
+                if (it == changed_keys.end())
+                    changed_keys.insert(std::pair<OcTreeKey, bool>(key, false));
+            }
         }
       } else {
         updateNodeLogOdds(node, log_odds_update);
@@ -475,21 +482,28 @@ namespace octomap {
     // at last level, update node, end of recursion
     else {
       if (use_change_detection) {
-//        bool occBefore = this->isNodeOccupied(node);
+        // New nodes will be treated as unoccupied prior to updating log odds
+        bool occBefore = !node_just_created && this->isNodeOccupied(node);
         node->setLogOdds(log_odds_value);
+        bool occAfter = this->isNodeOccupied(node);
 
-        if (node_just_created) {  // new node
+        // if node occupation is altered by change, then save it as a change
+        // This only includes cells which go from empty/unknown to occupied, or from occupied to empty.
+        // This excludes cells which go from empty/unknown to empty, or from occupied to occupied.
+        if (occBefore != occAfter) {
+          if (node_just_created) {  // new node
             changed_keys.insert(std::pair<OcTreeKey, bool>(key, true));
-        } else {
-//        } else if (occBefore != this->isNodeOccupied(node)) {  // occupancy changed, track it
-//          KeyBoolMap::iterator it = changed_keys.find(key);
-//          if (it == changed_keys.end())
-//            changed_keys.insert(std::pair<OcTreeKey,bool>(key, false));
-//          else if (it->second == false)
-//            changed_keys.erase(it);
+          } else {
+            // else if (occBefore != occAfter) {  // occupancy changed, track it
+            //   KeyBoolMap::iterator it = changed_keys.find(key);
+            //   if (it == changed_keys.end())
+            //     changed_keys.insert(std::pair<OcTreeKey,bool>(key, false));
+            //   else if (it->second == false)
+            //     changed_keys.erase(it);
             KeyBoolMap::iterator it = changed_keys.find(key);
             if (it == changed_keys.end())
-                changed_keys.insert(std::pair<OcTreeKey,bool>(key, false));
+              changed_keys.insert(std::pair<OcTreeKey, bool>(key, false));
+          }
         }
       } else {
         node->setLogOdds(log_odds_value);
