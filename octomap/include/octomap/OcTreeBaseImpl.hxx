@@ -34,6 +34,7 @@
 #undef max
 #undef min
 #include <limits>
+#include <easy/profiler.h>
 
 #ifdef _OPENMP
   #include <omp.h>
@@ -338,7 +339,7 @@ namespace octomap {
 
   template <class NODE,class I>
   bool OcTreeBaseImpl<NODE,I>::coordToKeyChecked(const point3d& point, OcTreeKey& key) const{
-
+    EASY_FUNCTION(profiler::colors::Green)
     for (unsigned int i=0;i<3;i++) {
       if (!coordToKeyChecked( point(i), key[i])) return false;
     }
@@ -432,6 +433,7 @@ namespace octomap {
 
   template <class NODE,class I>
   NODE* OcTreeBaseImpl<NODE,I>::search (const OcTreeKey& key, unsigned int depth) const {
+    EASY_FUNCTION(profiler::colors::Blue)
     assert(depth <= tree_depth);
     if (root == NULL)
       return NULL;

@@ -299,6 +299,7 @@ namespace octomap {
 
   template <class NODE>
   NODE* OccupancyOcTreeBase<NODE>::updateNode(const OcTreeKey& key, float log_odds_update, bool lazy_eval) {
+    EASY_FUNCTION(profiler::colors::Brick)
     // early abort (no change will happen).
     // may cause an overhead in some configuration, but more often helps
     NODE* leaf = this->search(key);
@@ -340,6 +341,7 @@ namespace octomap {
 
   template <class NODE>
   NODE* OccupancyOcTreeBase<NODE>::updateNode(const OcTreeKey& key, bool occupied, bool lazy_eval) {
+    EASY_FUNCTION(profiler::colors::Yellow)
     float logOdds = this->prob_miss_log;
     if (occupied)
       logOdds = this->prob_hit_log;
@@ -366,6 +368,7 @@ namespace octomap {
   template <class NODE>
   NODE* OccupancyOcTreeBase<NODE>::updateNodeRecurs(NODE* node, bool node_just_created, const OcTreeKey& key,
                                                     unsigned int depth, const float& log_odds_update, bool lazy_eval) {
+    // EASY_FUNCTION(profiler::colors::Cyan, profiler::OFF)
     bool created_node = false;
 
     assert(node);

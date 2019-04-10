@@ -74,6 +74,7 @@ namespace octomap {
   }
 
   float OcTreeNode::getMaxChildLogOdds() const{
+    EASY_FUNCTION(profiler::colors::Gold)
     float max = -std::numeric_limits<float>::max();
     
     if (children !=NULL){

@@ -38,6 +38,7 @@
 #include "octomap_utils.h"
 #include "OcTreeDataNode.h"
 #include <limits>
+#include <easy/profiler.h>
 
 namespace octomap {
 
@@ -81,7 +82,8 @@ namespace octomap {
 
     /// update this node's occupancy according to its children's maximum occupancy
     inline void updateOccupancyChildren() {
-      this->setLogOdds(this->getMaxChildLogOdds());  // conservative
+        EASY_FUNCTION(profiler::colors::Red100)
+        this->setLogOdds(this->getMaxChildLogOdds());  // conservative
     }
 
     /// adds p to the node's logOdds value (with no boundary / threshold checking!)
